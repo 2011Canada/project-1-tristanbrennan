@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>   
+<html>   
+  
+<head>  
+    <title>  
+        Reimbursement Portal
+    </title> 
+      
+    <script src= 
+"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"> 
+    </script> 
+
+    <script>
+
+    //let username = document.getElementById("username-input").value
+    //let password = document.getElementById("password-input").value
+
+    //enhanced object literals
+    const reimbsubmit = {
+        //username,//this is the same as below
+        //password:password
+    }
+        //fetch
+        async function fetchTable(selector){
+            try{
+
+            let res = await fetch("http://localhost:8080/ServletDemo/account/0",{
+        //let res = await fetch("../auth",{
+         method:"POST",
+            body: JSON.stringify(reimbsubmit),
+            headers:{
+                "Content-Type" : "application/json"
+            }
+        })
+
+        let list = await res.json()
+        console.log(list);
+        
+        var cols = Headers(list, selector);   
+   
+            // Traversing the JSON data 
+            for (var i = 0; i < list.length; i++) { 
+                var row = $('<tr/>');    
+                for (var colIndex = 0; colIndex < cols.length; colIndex++) 
+                { 
+                    var val = list[i][cols[colIndex]]; 
+                      
+                    // If there is any key, which is matching 
+                    // with the column name 
+                    if (val == null) val = "";   
+                        row.append($('<td/>').html(val)); 
+                } 
+                  
+                // Adding each row to the table 
+                $(selector).append(row); 
+            } 
+
+        } catch( e) {
+        console.log(e);
+        }
+        //end of fetch
+        }
+    </script>
+
+</head>  
+  
+<body style = "text-align:center;" id = "body" onload="fetchTable('#table')">
+
+    <form>
+           <label>Reimbursement Amount</label>
+           <input id="amount-input" type="number" class="form-control" placeholder="Amount">
+
+           <label>Reimbursement Type</label>
+           <input id="type-input" type="text" class="form-control" placeholder="Type">
+
+           <label>Reimbursement Description</label>
+           <input id="description-input" type="text" class="form-control" placeholder="Description">
+
+           <button type="submit" class="btn btn-black">Submit</button>
+     </form>
+      
+    <br><br> 
+      
+    <table align = "center"
+            id="table" border="1"> 
+    </table> 
+      
+    <script>    
+              
+     
+          
+        function Headers(list, selector) { 
+            var columns = []; 
+            var header = $('<tr/>'); 
+              
+            for (var i = 0; i < list.length; i++) { 
+                var row = list[i]; 
+                  
+                for (var k in row) { 
+                    if ($.inArray(k, columns) == -1) { 
+                        columns.push(k); 
+                          
+                        // Creating the header 
+                        header.append($('<th/>').html(k)); 
+                    } 
+                } 
+            } 
+              
+            // Appending the header to the table 
+            $(selector).append(header); 
+                return columns; 
+        }      
+        
+    async function submitRequest(){
+
+    let amount = document.getElementById("amount-input").value
+    let type = document.getElementById("type-input").value
+    let description = document.getElementById("description-input").value
+
+    //enhanced object literals
+    const reimb = {
+        amount,//this is the same as below
+        type,
+        description
+    }
+
+try{
+
+    let res = await fetch("http://localhost:8080/ServletDemo/reimburse",{
+    //let res = await fetch("../auth",{
+        method:"POST",
+        body: JSON.stringify(reimb),
+        headers:{
+            "Content-Type" : "application/json"
+        }
+    })
+
+    //let user = await res.json()
+    //console.log(user);
+
+} catch( e) {
+    //console.log(e);
+}
+}
+
+document.getElementsByTagName("form")[0].addEventListener('submit', submitRequest)
+
+    </script>  
+</body>   
+  
+</html> 
